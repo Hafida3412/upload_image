@@ -18,19 +18,23 @@ if(isset($_FILES['file'])){
     // "explode" signifie qu'elle découpe un tableaux en 2 éléments: ['gros plan chat', 'jpg']
     $tabExtension = explode('.', $name);
     //var_dump($tabExtension);
-    $extension = strtolower(end($tabExtension));
+    $extension = strtolower(end($tabExtension));//On récupère l'extension 'jpg', on le met en minuscule
+
     //var_dump($extension);
 
     //CREATION D UN TABLEAU DES EXTENSIONS AUTORISEES
     $extensionsAutorisees = ['jpg', 'jpeg', 'gif', 'png'];
+
     $tailleMax = 400000; //taille en bytes
+    //var_dump($size);die; // vérification de la taille de l'image que l'on veut uploader
+    
     if(in_array($extension, $extensionsAutorisees) && $size <= $tailleMax && $error == 0){
-        $uniqueName = uniqid('', true);
+        $uniqueName = uniqid('', true);//on change le nom de l'image par un nom unique
         //var_dump($uniqueName);
         $fileName = $uniqueName.'.'. $extension;
         
-        move_uploaded_file($tmpName,'./upload/'.$fileName);
-     
+        move_uploaded_file($tmpName,'./upload/'.$fileName);//création du fichier pour uploader l'image
+
         //ON AJOUTE UNE REQUETE
         $req = $db->prepare('INSERT INTO file (name) VALUES (?)');//On met autant de ? qu'il y a d'éléments qu'on lui passe dans le "execute"
         $req->execute([$fileName]);
